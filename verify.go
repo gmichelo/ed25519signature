@@ -5,43 +5,15 @@ import (
 	"crypto/x509"
 	"encoding/hex"
 	"encoding/pem"
-	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
-func main() {
-	flag.Parse()
-	log.SetFlags(log.Lshortfile)
-	if flag.NArg() != 3 {
-		log.Fatal("expected three arguments: public key, file to check and signature")
-	}
-
-	pubKey := flag.Arg(0)
-	fileToCheck := flag.Arg(1)
-	signature := flag.Arg(2)
-
-	pub, err := GetPublicKey(pubKey)
-	if err != nil {
-		log.Fatal(err)
-	}
-	ok, err := pub.Verify(fileToCheck, signature)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if ok {
-		log.Println("valid signature")
-	} else {
-		log.Println("invalid signature")
-	}
-}
-
 type PublicKey ed25519.PublicKey
 
-func GetPublicKey(publicKey string) (PublicKey, error) {
-	f, err := os.Open(publicKey)
+func decodePEMFile(filePath string) ([]byte, error) {
+	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +26,12 @@ func GetPublicKey(publicKey string) (PublicKey, error) {
 	if p == nil {
 		return nil, fmt.Errorf("no pem block found")
 	}
-	key, err := x509.ParsePKIXPublicKey(p.Bytes)
+	return p.Bytes, nil
+}
+
+func GetPublicKey(publicKey string) (PublicKey, error) {
+	p, _ := decodePEMFile(publicKey)
+	key, err := x509.ParsePKIXPublicKey(p)
 	if err != nil {
 		return nil, err
 	}
