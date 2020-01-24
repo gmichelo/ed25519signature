@@ -9,8 +9,11 @@ import (
 	"os"
 )
 
+//PrivateKey is ed25519.PrivateKey.
 type PrivateKey ed25519.PrivateKey
 
+//GetPrivateKey reads the private key from input file and
+//returns the initialized PrivateKey.
 func GetPrivateKey(privateKey string) (PrivateKey, error) {
 	p, _ := decodePEMFile(privateKey)
 	key, err := x509.ParsePKCS8PrivateKey(p)
@@ -24,6 +27,8 @@ func GetPrivateKey(privateKey string) (PrivateKey, error) {
 	return PrivateKey(edKey), nil
 }
 
+//Sign reads the input file and compute the ED25519 signature
+//using the private key.
 func (p PrivateKey) Sign(path string) (string, error) {
 	f, err := os.Open(path)
 	if err != nil {

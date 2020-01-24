@@ -10,12 +10,14 @@ import (
 )
 
 func generate(private, public string) {
+	//GenerateKey will generate the private and public key pairs using
+	//rand.Rander as source of entropy
 	pubKey, privKey, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	//Write public key
+	//Create file and write public key
 	pubOut, err := os.OpenFile(public, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		log.Fatalf("Failed to create %s file: %s", private, err)
@@ -24,6 +26,7 @@ func generate(private, public string) {
 	if err != nil {
 		log.Fatalf("Unable to marshal public key: %v", err)
 	}
+	//Encode public key using PEM format
 	if err := pem.Encode(pubOut, &pem.Block{
 		Type:  "PUBLIC KEY",
 		Bytes: pubBytes,
@@ -34,7 +37,7 @@ func generate(private, public string) {
 		log.Fatalf("Error closing %s file: %s", public, err)
 	}
 
-	//Write private key
+	//Create file and write private key
 	keyOut, err := os.OpenFile(private, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		log.Fatalf("Failed to create %s file: %s", private, err)

@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 )
 
 func main() {
@@ -45,29 +47,35 @@ func main() {
 }
 
 func sign(privKey, fileToSign string) {
+	//Read the private key
 	key, err := GetPrivateKey(privKey)
 	if err != nil {
 		log.Fatal(err)
 	}
+	//Compute the signature on the input file
 	signature, err := key.Sign(fileToSign)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(signature)
+	fmt.Println("Signature:", signature)
 }
 
 func verify(pubKey, fileToCheck, signature string) {
+	//Read the public key
 	pub, err := GetPublicKey(pubKey)
 	if err != nil {
 		log.Fatal(err)
 	}
+	//Verify if input signature is valid
 	ok, err := pub.Verify(fileToCheck, signature)
 	if err != nil {
 		log.Fatal(err)
 	}
 	if ok {
-		log.Println("valid signature")
+		fmt.Println("Valid signature")
+		os.Exit(0)
 	} else {
-		log.Println("invalid signature")
+		fmt.Println("Invalid signature")
+		os.Exit(1)
 	}
 }
