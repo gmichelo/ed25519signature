@@ -9,11 +9,11 @@ ed25519signature <command> <args>
 
 Possible commands and respective arguments:
 
-| Command   |   Arguments       |               |           |
-|--------|----------------------|---------------|-----------|
-| sign   | private-key-file     | file-to-sign              |
-| verify | public-key-file      | file-to-check | signature |
-| gen    | private-key-filename | public-key-filename       |
+| Command | Arg(0)               | Arg(1)        | Arg(2)
+|---------|----------------------|---------------|-----------|
+| sign    | private-key-file     | file-to-sign              |
+| verify  | public-key-file      | file-to-check | signature |
+| gen     | private-key-filename | public-key-filename       |
 
 ## Examples
 
